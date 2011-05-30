@@ -46,7 +46,7 @@ class CookieChecks < PassivePlugin
   end
   
   def check_sensitive_info(ironsess, results, cookie)
-    r = Regexp.new('user|pass|uid|pwd|admin|attempt|retr|login|auth|secure', Regexp::IGNORECASE)
+    r = Regexp.new('user|pass|uid|pwd|admin|attempt|retr|login|auth|secure|limit', Regexp::IGNORECASE)
     if r =~ cookie.value or r =~ cookie.name
         plugin_result = PluginResult.new(ironsess.Request.host)
         plugin_result.title = "Cookie #{cookie.name} may contain sensitive information"
