@@ -1,4 +1,4 @@
-#Manifest File for the Python Plugins of the Iron Web Security Testing Framework
+#Manifest File for the Ruby Plugins of the Iron Web Security Testing Framework
 #One entry per line. No space or special characters allowed in Filenames
 #Format: filename v{version number}
 
@@ -7,5 +7,7 @@
 /Passive
 WebServerAnalysis.rb v0.1
 CookieChecks.rb v0.1
+BasicAuthentication.rb v0.1
+CrossDomainXmlPolicyAnalysis.rb v0.1
 
 /Format
