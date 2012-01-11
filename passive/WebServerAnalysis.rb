@@ -1,4 +1,5 @@
-# Authors: Lavakumar Kuppan & Manish Saindane
+#Author: Manish Saindane
+#License: MIT License - http://www.opensource.org/licenses/mit-license
  
 include Iron
 
@@ -23,7 +24,7 @@ class WebServerAnalysis < PassivePlugin
     plugin_result.result_type = PluginResultType.information
     plugin_result.severity = PluginResultSeverity.low
 	plugin_result.confidence = PluginResultConfidence.high
-    plugin_result.uniqueness_string = "WebServerAnalysis|information|serverheader|#{ironsess.Request.host}|#{banner}"
+    plugin_result.signature = "WebServerAnalysis|information|serverheader|#{ironsess.Request.host}|#{banner}"
     results.add(plugin_result)
   end
   
@@ -43,7 +44,7 @@ class WebServerAnalysis < PassivePlugin
     plugin_result.result_type = PluginResultType.vulnerability
     plugin_result.confidence = PluginResultConfidence.high
     plugin_result.severity = PluginResultSeverity.low
-    plugin_result.uniqueness_string = "WebServerAnalysis|vulnerability|low|serverversion|#{ironsess.Request.Host}|#{banner}"
+    plugin_result.signature = "WebServerAnalysis|vulnerability|low|serverversion|#{ironsess.Request.Host}|#{banner}"
     results.add(plugin_result)
   end
   
@@ -76,7 +77,7 @@ class WebServerAnalysis < PassivePlugin
     plugin_result.result_type = PluginResultType.vulnerability
     plugin_result.confidence = confidence
     plugin_result.severity = severity
-    plugin_result.uniqueness_string = "WebServerAnalysis|vulnerability|vulnerableversion|#{ironsess.Request.host}|#{banner}|#{title}"
+    plugin_result.signature = "WebServerAnalysis|vulnerability|vulnerableversion|#{ironsess.Request.host}|#{banner}|#{title}"
     results.add(plugin_result)
   end
 end
@@ -84,7 +85,6 @@ end
 p = WebServerAnalysis.new
 p.name = "Web Server Identification"
 p.description = "This plugin analyzes the 'Server' header in the HTTP response and reports interesting information from it"
-p.file_name = "WebServerAnalysis.rb"
-p.calling_state = PluginCallingState.before_interception
+#p.calling_state = PluginCallingState.before_interception
 p.works_on = PluginWorksOn.response
 PassivePlugin.add(p)

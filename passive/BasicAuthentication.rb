@@ -1,3 +1,6 @@
+#Author: Manish Saindane
+#License: MIT License - http://www.opensource.org/licenses/mit-license
+
 include Iron
 
 class BasicAuthentication < PassivePlugin
@@ -16,7 +19,7 @@ class BasicAuthentication < PassivePlugin
         plugin_result.result_type = PluginResultType.vulnerability
         plugin_result.confidence = PluginResultConfidence.high
         plugin_result.severity = PluginResultSeverity.high
-        plugin_result.uniqueness_string = "BasicAuthentication|vulnerability|high|authorization|#{ironsess.Request.host}"
+        plugin_result.signature = "BasicAuthentication|vulnerability|high|authorization|#{ironsess.Request.host}"
         results.add(plugin_result)
     end
 end
@@ -24,7 +27,5 @@ end
 p = BasicAuthentication.new
 p.name = "Basic Auth Check"
 p.description = "This plugin checks for the use of Basic Authentication over insecure channels."
-p.file_name = "BasicAuthentication.rb"
-p.calling_state = PluginCallingState.before_interception
 p.works_on = PluginWorksOn.response
 PassivePlugin.add(p)

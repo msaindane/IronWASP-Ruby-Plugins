@@ -1,4 +1,5 @@
-# Author: Manish Saindane
+#Author: Manish Saindane
+#License: MIT License - http://www.opensource.org/licenses/mit-license
 
 include Iron
 
@@ -34,7 +35,7 @@ class CrossDomainXmlPolicyAnalysis < PassivePlugin
         plugin_result.result_type = PluginResultType.vulnerability
         plugin_result.confidence = PluginResultConfidence.high
         plugin_result.severity = PluginResultSeverity.high
-        plugin_result.uniqueness_string = "CrossDomainXmlPolicyAnalysis|vulnerability|high|cross-domain-policy|#{ironsess.Request.host}|open domain|#{node}"
+        plugin_result.signature = "CrossDomainXmlPolicyAnalysis|vulnerability|high|cross-domain-policy|#{ironsess.Request.host}|open domain|#{node}"
         results.add(plugin_result)
     end
     
@@ -46,7 +47,7 @@ class CrossDomainXmlPolicyAnalysis < PassivePlugin
         plugin_result.result_type = PluginResultType.vulnerability
         plugin_result.confidence = PluginResultConfidence.high
         plugin_result.severity = PluginResultSeverity.high
-        plugin_result.uniqueness_string = "CrossDomainXmlPolicyAnalysis|vulnerability|high|cross-domain-policy|#{ironsess.Request.host}|secure flag|#{node}"
+        plugin_result.signature = "CrossDomainXmlPolicyAnalysis|vulnerability|high|cross-domain-policy|#{ironsess.Request.host}|secure flag|#{node}"
         results.add(plugin_result)
     end
 end
@@ -54,7 +55,6 @@ end
 p = CrossDomainXmlPolicyAnalysis.new
 p.name = "Cross-domain XML policy analysis"
 p.description = "This plugin analyzes the cross-domain policy for the web server and reports vulnerabilities."
-p.file_name = "CrossDomainXmlPolicyAnalysis.rb"
-p.calling_state = PluginCallingState.before_interception
+#p.calling_state = PluginCallingState.before_interception
 p.works_on = PluginWorksOn.response
 PassivePlugin.add(p)
