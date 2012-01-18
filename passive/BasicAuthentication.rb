@@ -1,7 +1,7 @@
 #Author: Manish Saindane
 #License: MIT License - http://www.opensource.org/licenses/mit-license
 
-include Iron
+include IronWASP
 
 class BasicAuthentication < PassivePlugin
     def Check(ironsess, results)
