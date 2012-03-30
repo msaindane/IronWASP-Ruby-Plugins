@@ -17,15 +17,18 @@ class WebServerAnalysis < PassivePlugin
   end
   
   def report_server_name(ironsess, results, banner)
-    plugin_result = PluginResult.new(ironsess.Request.host)
-    plugin_result.title = "Runs on #{banner}"
-    plugin_result.summary = "The Web Server returned this banner in its response headers - #{banner}"
-    plugin_result.triggers.add("",ironsess.Request,banner,ironsess.Response)
-    plugin_result.result_type = PluginResultType.information
-    plugin_result.severity = PluginResultSeverity.low
-	plugin_result.confidence = PluginResultConfidence.high
-    plugin_result.signature = "WebServerAnalysis|information|serverheader|#{ironsess.Request.host}|#{banner}"
-    results.add(plugin_result)
+  	signature = "serverheader|#{banner}"
+  	if is_signature_unique(ironsess.Request.host, PluginResultType.information, signature)
+	    plugin_result = PluginResult.new(ironsess.Request.host)
+	    plugin_result.title = "Runs on #{banner}"
+	    plugin_result.summary = "The Web Server returned this banner in its response headers - #{banner}"
+	    plugin_result.triggers.add("",ironsess.Request,banner,ironsess.Response)
+	    plugin_result.result_type = PluginResultType.information
+	    plugin_result.severity = PluginResultSeverity.low
+			plugin_result.confidence = PluginResultConfidence.high
+	    plugin_result.signature = signature
+	    results.add(plugin_result)
+    end
   end
   
   def check_version(ironsess, results, banner)
@@ -37,15 +40,18 @@ class WebServerAnalysis < PassivePlugin
   end
   
   def report_version_found(ironsess, results, banner, version)
-    plugin_result = PluginResult.new(ironsess.Request.host)
-    plugin_result.title = "Server leaks version number"
-    plugin_result.summary = "The Web Server's banner contains the version number of the server - #{banner}"
-    plugin_result.triggers.add('',ironsess.Request, version, ironsess.Response)
-    plugin_result.result_type = PluginResultType.vulnerability
-    plugin_result.confidence = PluginResultConfidence.high
-    plugin_result.severity = PluginResultSeverity.low
-    plugin_result.signature = "WebServerAnalysis|vulnerability|low|serverversion|#{ironsess.Request.Host}|#{banner}"
-    results.add(plugin_result)
+    signature = "low|serverversion|#{banner}"
+    if is_signature_unique(ironsess.Request.host, PluginResultType.vulnerability, signature)
+	    plugin_result = PluginResult.new(ironsess.Request.host)
+	    plugin_result.title = "Server leaks version number"
+	    plugin_result.summary = "The Web Server's banner contains the version number of the server - #{banner}"
+	    plugin_result.triggers.add('',ironsess.Request, version, ironsess.Response)
+	    plugin_result.result_type = PluginResultType.vulnerability
+	    plugin_result.confidence = PluginResultConfidence.high
+	    plugin_result.severity = PluginResultSeverity.low
+	    plugin_result.signature = signature
+	    results.add(plugin_result)
+    end
   end
   
   def check_if_version_old(ironsess, results, banner, name, version)
@@ -70,20 +76,24 @@ class WebServerAnalysis < PassivePlugin
   end
   
   def report_vulnerable_version(ironsess, results, title, summary, banner, name, severity, confidence)
-    plugin_result = PluginResult.new(ironsess.Request.Host)
-    plugin_result.title = title
-    plugin_result.summary = summary
-    plugin_result.triggers.add('', ironsess.Request, banner, ironsess.Response)
-    plugin_result.result_type = PluginResultType.vulnerability
-    plugin_result.confidence = confidence
-    plugin_result.severity = severity
-    plugin_result.signature = "WebServerAnalysis|vulnerability|vulnerableversion|#{ironsess.Request.host}|#{banner}|#{title}"
-    results.add(plugin_result)
+    signature = "vulnerableversion|#{banner}|#{title}"
+    if is_signature_unique(ironsess.Request.host, PluginResultType.vulnerability, signature)
+	    plugin_result = PluginResult.new(ironsess.Request.host)
+	    plugin_result.title = title
+	    plugin_result.summary = summary
+	    plugin_result.triggers.add('', ironsess.Request, banner, ironsess.Response)
+	    plugin_result.result_type = PluginResultType.vulnerability
+	    plugin_result.confidence = confidence
+	    plugin_result.severity = severity
+	    plugin_result.signature = signature
+	    results.add(plugin_result)
+    end
   end
 end
 
 p = WebServerAnalysis.new
 p.name = "Web Server Identification"
+p.version = "0.1"
 p.description = "This plugin analyzes the 'Server' header in the HTTP response and reports interesting information from it"
 #p.calling_state = PluginCallingState.before_interception
 p.works_on = PluginWorksOn.response

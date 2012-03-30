@@ -5,7 +5,7 @@ include IronWASP
 
 class CrossDomainXmlPolicyAnalysis < PassivePlugin
     def Check(ironsess, results)
-        if ironsess.Request.url =~ /crossdomain.xml/i
+        if ironsess.Request.url =~ /crossdomain.xml/i and ironsess.Response.code == 200
             check_allowed_domains(ironsess, results)
         end
     end
@@ -28,6 +28,8 @@ class CrossDomainXmlPolicyAnalysis < PassivePlugin
     end
     
     def report_allowed_domains(ironsess, node, results)
+      signature = "high|cross-domain-policy|open domain|#ironsess.Request.url_path|#{node}"
+      if is_signature_unique(ironsess.Request.host, PluginResultType.vulnerability, signature)
         plugin_result = PluginResult.new(ironsess.Request.host)
         plugin_result.title = "Wildcard domain set on Cross-domain policy"
         plugin_result.summary = "Setting wildcard (*) domains would allow access to documents originating from any domain."
@@ -35,11 +37,14 @@ class CrossDomainXmlPolicyAnalysis < PassivePlugin
         plugin_result.result_type = PluginResultType.vulnerability
         plugin_result.confidence = PluginResultConfidence.high
         plugin_result.severity = PluginResultSeverity.high
-        plugin_result.signature = "CrossDomainXmlPolicyAnalysis|vulnerability|high|cross-domain-policy|#{ironsess.Request.host}|open domain|#{node}"
+        plugin_result.signature = signature
         results.add(plugin_result)
+      end
     end
     
     def report_secure_flag(ironsess, node, results)
+      signature = "high|cross-domain-policy|secure flag|#ironsess.Request.url_path|#{node}"
+      if is_signature_unique(ironsess.Request.host, PluginResultType.vulnerability, signature)
         plugin_result = PluginResult.new(ironsess.Request.host)
         plugin_result.title = "Secure flag set to false on Cross-domain policy"
         plugin_result.summary = "The web application permits SWF files on a non-HTTPS server to load data from this HTTPS server. Setting the secure attribute to false could compromise the security offered by HTTPS. In particular, setting this attribute to false opens secure content to snooping and spoofing attacks."
@@ -47,13 +52,15 @@ class CrossDomainXmlPolicyAnalysis < PassivePlugin
         plugin_result.result_type = PluginResultType.vulnerability
         plugin_result.confidence = PluginResultConfidence.high
         plugin_result.severity = PluginResultSeverity.high
-        plugin_result.signature = "CrossDomainXmlPolicyAnalysis|vulnerability|high|cross-domain-policy|#{ironsess.Request.host}|secure flag|#{node}"
+        plugin_result.signature = signature
         results.add(plugin_result)
+      end
     end
 end
 
 p = CrossDomainXmlPolicyAnalysis.new
 p.name = "Cross-domain XML policy analysis"
+p.version = "0.1"
 p.description = "This plugin analyzes the cross-domain policy for the web server and reports vulnerabilities."
 #p.calling_state = PluginCallingState.before_interception
 p.works_on = PluginWorksOn.response
