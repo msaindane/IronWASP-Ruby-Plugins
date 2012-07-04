@@ -5,6 +5,16 @@ include IronWASP
 
 class WebServerAnalysis < PassivePlugin
 
+  def GetInstance
+  	p = WebServerAnalysis.new
+		p.name = "Web Server Identification"
+		p.version = "0.2"
+		p.description = "This plugin analyzes the 'Server' header in the HTTP response and reports interesting information from it"
+		#p.calling_state = PluginCallingState.before_interception
+		p.works_on = PluginWorksOn.response
+		return p
+  end
+  
   def Check(ironsess, results)
     banner=""
     if ironsess.Response.headers.has("Server")
@@ -92,9 +102,4 @@ class WebServerAnalysis < PassivePlugin
 end
 
 p = WebServerAnalysis.new
-p.name = "Web Server Identification"
-p.version = "0.1"
-p.description = "This plugin analyzes the 'Server' header in the HTTP response and reports interesting information from it"
-#p.calling_state = PluginCallingState.before_interception
-p.works_on = PluginWorksOn.response
-PassivePlugin.add(p)
+PassivePlugin.add(p.get_instance)

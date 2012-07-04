@@ -4,6 +4,17 @@
 include IronWASP
 
 class BasicAuthentication < PassivePlugin
+    
+    def GetInstance
+    	p = BasicAuthentication.new
+			p.name = "Basic Auth Check"
+			p.version = "0.2"
+			p.description = "This plugin checks for the use of Basic Authentication over insecure channels."
+			#p.calling_state = PluginCallingState.before_interception
+			p.works_on = PluginWorksOn.response
+			return p
+    end
+    
     def Check(ironsess, results)
         if ironsess.Response.headers.has('WWW-Authenticate') and !ironsess.Request.ssl
             auth_method = ironsess.Response.headers.get('WWW-Authenticate')
@@ -22,14 +33,10 @@ class BasicAuthentication < PassivePlugin
 	        plugin_result.confidence = PluginResultConfidence.high
 	        plugin_result.severity = PluginResultSeverity.high
 	        plugin_result.signature = signature
-        	results.add(plugin_result)
-    	end
-	end
+	        results.add(plugin_result)
+        end
+    end
 end
 
 p = BasicAuthentication.new
-p.name = "Basic Auth Check"
-p.version = "0.1"
-p.description = "This plugin checks for the use of Basic Authentication over insecure channels."
-p.works_on = PluginWorksOn.response
-PassivePlugin.add(p)
+PassivePlugin.add(p.get_instance)
