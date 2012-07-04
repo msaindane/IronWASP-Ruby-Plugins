@@ -6,6 +6,14 @@ include IronWASP
 
 class XHeaderAnalysis < PassivePlugin
 
+    def GetInstance
+        p = XHeaderAnalysis.new
+        p.name = "X Header Analysis"
+        p.description = "Plugin used to analyse most of the X headers found in server responses"
+        p.works_on = PluginWorksOn.response
+        return p
+    end
+
     def Check(sess, results)
     	res = sess.response
     	technology_used(sess, results) if res.headers.has("x-powered-by")
@@ -114,10 +122,4 @@ class XHeaderAnalysis < PassivePlugin
 end
 
 p = XHeaderAnalysis.new
-p.name = "X Header Analysis"
-p.description = "Plugin used to analyse most of the X headers found in server responses"
-#When should this plugin be called. Possible values - before_interception, after_interception, both
-#p.calling_state = PluginCallingState.before_interception
-#On what should this plugin run. Possible values - request, response, both, offline. offline is the default value, it is also the recommended value if you are not going to perform any changes in the request/response
-p.works_on = PluginWorksOn.response
-PassivePlugin.add(p)
+PassivePlugin.add(p.get_instance)

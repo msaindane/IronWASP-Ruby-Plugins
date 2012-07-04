@@ -5,6 +5,14 @@ include IronWASP
 
 class DirListing < PassivePlugin
 
+    def GetInstance
+        p = DirListing.new
+        p.name = "Directory Listing"
+        p.description = "Identifies directory listing issuses in the website being tested."
+        p.works_on = PluginWorksOn.response
+        return p
+    end
+
     def Check(sess, results)
         res = sess.response
         matches_found = dir_listing_check(res)
@@ -53,10 +61,4 @@ class DirListing < PassivePlugin
 end
 
 p = DirListing.new
-p.name = "Directory Listing"
-p.description = "Identifies directory listing issuses in the website being tested."
-#When should this plugin be called. Possible values - before_interception, after_interception, both
-#p.calling_state = PluginCallingState.before_interception
-#On what should this plugin run. Possible values - request, response, both, offline. offline is the default value, it is also the recommended value if you are not going to perform any changes in the request/response
-p.works_on = PluginWorksOn.response
-PassivePlugin.add(p)
+PassivePlugin.add(p.get_instance)

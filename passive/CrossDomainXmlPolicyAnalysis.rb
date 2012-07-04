@@ -4,6 +4,17 @@
 include IronWASP
 
 class CrossDomainXmlPolicyAnalysis < PassivePlugin
+    
+    def GetInstance
+	    p = CrossDomainXmlPolicyAnalysis.new
+			p.name = "Cross-domain XML policy analysis"
+			p.version = "0.2"
+			p.description = "This plugin analyzes the cross-domain policy for the web server and reports vulnerabilities."
+			#p.calling_state = PluginCallingState.before_interception
+			p.works_on = PluginWorksOn.response
+			return p
+    end
+    
     def Check(ironsess, results)
         if ironsess.Request.url =~ /crossdomain.xml/i and ironsess.Response.code == 200
             check_allowed_domains(ironsess, results)
@@ -59,9 +70,4 @@ class CrossDomainXmlPolicyAnalysis < PassivePlugin
 end
 
 p = CrossDomainXmlPolicyAnalysis.new
-p.name = "Cross-domain XML policy analysis"
-p.version = "0.1"
-p.description = "This plugin analyzes the cross-domain policy for the web server and reports vulnerabilities."
-#p.calling_state = PluginCallingState.before_interception
-p.works_on = PluginWorksOn.response
-PassivePlugin.add(p)
+PassivePlugin.add(p.get_instance)

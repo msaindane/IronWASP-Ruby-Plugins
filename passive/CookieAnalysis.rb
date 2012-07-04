@@ -5,6 +5,16 @@ include IronWASP
 
 class CookieAnalysis < PassivePlugin
 
+  def GetInstance
+  	p = CookieAnalysis.new
+		p.name = "CookieAnalysis"
+		p.version = "0.2"
+		p.description = "This plugin analyses cookies set by server responses and reports cookies missing 'HTTPOnly' flag and if the response is over SSL then whether the 'secure' flag is set and also alerts the user if it may contain sensitive information."
+		#p.calling_state = PluginCallingState.before_interception
+		p.works_on = PluginWorksOn.response
+		return p
+  end
+  
   def Check(ironsess, results)
     if ironsess.Response.Headers.has("Set-Cookie")
       cookie_jar = ironsess.Response.set_cookies
@@ -72,9 +82,4 @@ class CookieAnalysis < PassivePlugin
 end
 
 p = CookieAnalysis.new
-p.name = "CookieAnalysis"
-p.version = "0.1"
-p.description = "This plugin analyses cookies set by server responses and reports cookies missing 'HTTPOnly' flag and if the response is over SSL then whether the 'secure' flag is set and also alerts the user if it may contain sensitive information."
-#p.calling_state = PluginCallingState.before_interception
-p.works_on = PluginWorksOn.response
-PassivePlugin.add(p)
+PassivePlugin.add(p.get_instance)
