@@ -1,0 +1,19 @@
+Summary:
+========
+This plugin can be used to convert JavaSerialized objects to XML and back which can be processed by IronWASP for individual request/responses or fuzzing.
+
+Usage:
+======
+The main component of this plugin is JavaSerialization.jar that can be found in the <IRONWASP>\format\JavaSerialization\lib\java folder. This can be used as a standalone jar as follows:
+
+java -jar JavaSerialization.jar <base64 string> <xml | java>
+
+where
+<base64 string> - JAVA Serialized object array in base64 format OR XML version of the JAVA object array converted by XStream in base64 format
+<xml | java> - keywords for conversion in the desired format. "xml" would convert JAVA object array to XML and "java" would convert XML to Java object array in base64 format
+
+This can be used within IronWASP from the Body tab of the individual Request/Response, or the scripting shell similar to other format plugins.
+
+IMPORTANT:
+===========
+Before using the plugin, place all the client side jars (You must have these if you are testing a thick client or applets) in the <IRONWASP>\format\JavaSerialization\lib\clientlibs folder. This is necessary to resolve any custom JAVA classes used by the application in the serialized objects.
